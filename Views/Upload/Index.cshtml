@@ -1,0 +1,131 @@
+﻿@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Upload File";
+}
+
+<style>
+    .file-input {
+        background-color: #e3f2fd; /* Light blue background */
+        border-radius: 50px; /* Makes the input pill-shaped */
+        border: 1px solid #000; /* Border color */
+        transition: background-color 0.3s; /* Transition for hover effect */
+    }
+
+        .file-input:hover {
+            background-color: #cfe3fd; /* Slightly darker on hover */
+        }
+
+    .loading {
+        display: none; /* Initially hidden */
+        margin-top: 10px; /* Spacing above loading icon */
+    }
+
+    .uploaded-file {
+        display: none; /* Initially hidden */
+        margin-top: 10px; /* Spacing above uploaded file icon */
+    }
+
+    .vertical-line {
+        width: 1px;
+        height: 24px;
+        background-color: #000;
+    }
+
+    .cursor-pointer {
+        cursor: pointer;
+    }
+
+    .upload-icon {
+        font-size: 8rem; /* Increased size of the upload icon */
+        margin-top: 10px; /* Spacing above the upload icon */
+        color: #0d6efd; /* Optional: Change the icon color */
+    }
+
+    .uploaded-file {
+        font-size: 8rem; /* Increased size of the upload icon */
+        margin-top: 10px; /* Spacing above the upload icon */
+        color: #0d6efd; /* Optional: Change the icon color */
+    }
+
+    body {
+        background-color: #f8f9fa; /* light grey */
+    }
+
+
+    
+    
+</style>
+
+<!-- File Upload Section -->
+<div class="container d-flex justify-content-center align-items-center vh-100">
+    <div class="card shadow-lg p-4 border-3 rounded-3" style="max-width: 500px; width: 100%;">
+        <div class="text-center">
+            <h3 class="card-title mb-3">SnapPrint</h3>
+            <p class="text-muted">Upload your PDF file for printing</p>
+        </div>
+
+        <div class="text-center mb-4">
+            <i class="bi bi-cloud-arrow-up-fill display-1 text-primary"></i> <!-- Upload Icon -->
+        </div>
+
+
+        <form asp-controller="Upload" asp-action="Upload" method="post" enctype="multipart/form-data" id="uploadForm" class="needs-validation" novalidate>
+            <div class="mb-3">
+                <input class="form-control" type="file" id="formFile" name="file" accept=".pdf" required onchange="updateFileName()">
+                <small class="text-muted file-name d-block mt-1">No file selected</small>
+                <div class="invalid-feedback">
+                    Please upload a valid PDF file.
+                </div>
+            </div>
+
+            <button type="submit" class="btn btn-primary w-100">Upload File</button>
+
+            <!-- Success Message -->
+            @if (TempData["SuccessMessage"] != null)
+            {
+                <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
+                    <i class="bi bi-check-circle-fill"></i> <!-- Success Icon -->
+                    <small>Success, select your file at SnapPrint Kiosk.</small> 
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+
+            <!-- Error Message -->
+            @if (TempData["ErrorMessage"] != null)
+            {
+                <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
+                    <i class="bi bi-exclamation-circle-fill"></i> <!-- Error Icon -->
+                    <strong>Error:</strong> @TempData["ErrorMessage"]
+                    <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
+                </div>
+            }
+        </form>
+    </div>
+</div>
+
+<script>
+    // JavaScript for Bootstrap form validation
+    (() => {
+        'use strict';
+
+        const forms = document.querySelectorAll('.needs-validation');
+
+        Array.prototype.slice.call(forms).forEach(form => {
+            form.addEventListener('submit', event => {
+                if (!form.checkValidity()) {
+                    event.preventDefault();
+                    event.stopPropagation();
+                }
+
+                form.classList.add('was-validated');
+            }, false);
+        });
+    })();
+
+    // Update the selected file name
+    function updateFileName() {
+        const fileInput = document.getElementById('formFile');
+        const fileNameLabel = document.querySelector('.file-name');
+        fileNameLabel.textContent = fileInput.files.length > 0 ? fileInput.files[0].name : 'No file selected';
+    }
+</script>
