@@ -68,7 +68,6 @@
             <i class="bi bi-cloud-arrow-up-fill display-1 text-primary"></i> <!-- Upload Icon -->
         </div>
 
-
         <form asp-controller="Upload" asp-action="Upload" method="post" enctype="multipart/form-data" id="uploadForm" class="needs-validation" novalidate>
             <div class="mb-3">
                 <input class="form-control" type="file" id="formFile" name="file" accept=".pdf" required onchange="updateFileName()">
@@ -84,8 +83,8 @@
             @if (TempData["SuccessMessage"] != null)
             {
                 <div class="alert alert-success alert-dismissible fade show mt-3" role="alert">
-                    <i class="bi bi-check-circle-fill"></i> <!-- Success Icon -->
-                    <small>Success, select your file at SnapPrint Kiosk.</small> 
+                    <i class="bi bi-check-circle-fill"></i>
+                    <small>Success, select your file at SnapPrint Kiosk.</small>
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
@@ -94,12 +93,13 @@
             @if (TempData["ErrorMessage"] != null)
             {
                 <div class="alert alert-danger alert-dismissible fade show mt-3" role="alert">
-                    <i class="bi bi-exclamation-circle-fill"></i> <!-- Error Icon -->
+                    <i class="bi bi-exclamation-circle-fill"></i>
                     <strong>Error:</strong> @TempData["ErrorMessage"]
                     <button type="button" class="btn-close" data-bs-dismiss="alert" aria-label="Close"></button>
                 </div>
             }
         </form>
+
     </div>
 </div>
 

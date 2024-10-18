@@ -1,12 +1,21 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using SnapPrintWeb.Data;
+using System;
 using System.IO;
 using System.Threading.Tasks;
-using Microsoft.AspNetCore.Http;
 
 namespace SnapPrintWeb.Controllers
 {
     public class UploadController : Controller
     {
+        private readonly SnapPrintDbContext _context;
+
+        public UploadController(SnapPrintDbContext context)
+        {
+            _context = context;
+        }
+
+        // Render the file upload form
         public IActionResult Index()
         {
             return View();
@@ -35,19 +44,26 @@ namespace SnapPrintWeb.Controllers
                 return RedirectToAction("Index");
             }
 
-            // Ensure upload directory exists
-            var uploadDir = Path.Combine(Directory.GetCurrentDirectory(), "UploadedFiles");
-            if (!Directory.Exists(uploadDir))
+
+            // Read the file content into a byte array
+            byte[] fileData;
+            using (var memoryStream = new MemoryStream())
             {
-                Directory.CreateDirectory(uploadDir);
+                await file.CopyToAsync(memoryStream);
+                fileData = memoryStream.ToArray();
             }
 
-            // Save file
-            var filePath = Path.Combine(uploadDir, file.FileName);
-            using (var stream = new FileStream(filePath, FileMode.Create))
+            // Create a new UploadedFile object and save to the database
+            var uploadedFile = new UploadedFile
             {
-                await file.CopyToAsync(stream);
-            }
+                FileName = file.FileName,
+                FileType = file.ContentType,
+                UploadedDateTime = DateTime.Now,
+                FileData = fileData
+            };
+
+            _context.UploadedFiles.Add(uploadedFile);
+            await _context.SaveChangesAsync();
 
             TempData["SuccessMessage"] = "File uploaded successfully!";
             return RedirectToAction("Index");

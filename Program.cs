@@ -1,3 +1,8 @@
+using SnapPrintWeb.Data;
+using Microsoft.EntityFrameworkCore;
+using SnapPrintWeb;
+
+
 var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
@@ -11,6 +16,13 @@ builder.Services.AddCors(options =>
         builder.AllowAnyOrigin().AllowAnyMethod().AllowAnyHeader();
     });
 });
+
+// Retrieve the connection string from appsettings.json
+var connectionString = builder.Configuration.GetConnectionString("snapprintdb");
+
+// Register MySQL database context and pass the connection string
+builder.Services.AddDbContext<SnapPrintDbContext>(options =>
+    options.UseMySql(connectionString, ServerVersion.AutoDetect(connectionString)));
 
 var app = builder.Build();
 
